@@ -11,25 +11,6 @@ class Task2Model2(nn.Module):
         self.feature_extractor = nn.Sequential(
             nn.Conv2d(                          # Conv 0
                 in_channels=image_channels,
-                out_channels=16,
-                kernel_size=3,
-                stride=1,
-                padding=1
-            ),
-            nn.BatchNorm2d(16),
-            nn.ReLU(),
-            nn.Conv2d(                          # Conv 1
-                in_channels=16,
-                out_channels=16,
-                kernel_size=3,
-                stride=1,
-                padding=1
-            ),
-            nn.Dropout2d(),
-            nn.BatchNorm2d(16),
-            nn.ReLU(),
-            nn.Conv2d(                          # Conv 2
-                in_channels=16,
                 out_channels=32,
                 kernel_size=3,
                 stride=1,
@@ -37,7 +18,7 @@ class Task2Model2(nn.Module):
             ),
             nn.BatchNorm2d(32),
             nn.ReLU(),
-            nn.Conv2d(                          # Conv 3
+            nn.Conv2d(                          # Conv 1
                 in_channels=32,
                 out_channels=32,
                 kernel_size=3,
@@ -47,7 +28,8 @@ class Task2Model2(nn.Module):
             nn.Dropout2d(),
             nn.BatchNorm2d(32),
             nn.ReLU(),
-            nn.Conv2d(                          # Conv 4
+            nn.MaxPool2d(2,2),
+            nn.Conv2d(                          # Conv 2
                 in_channels=32,
                 out_channels=64,
                 kernel_size=3,
@@ -56,18 +38,39 @@ class Task2Model2(nn.Module):
             ),
             nn.BatchNorm2d(64),
             nn.ReLU(),
-            nn.Conv2d(                          # Conv 5
+            nn.Conv2d(                          # Conv 3
                 in_channels=64,
                 out_channels=64,
                 kernel_size=3,
                 stride=1,
                 padding=1
             ),
+            nn.Dropout2d(),
             nn.BatchNorm2d(64),
+            nn.MaxPool2d(2,2),
             nn.ReLU(),
+            nn.Conv2d(                          # Conv 4
+                in_channels=64,
+                out_channels=128,
+                kernel_size=3,
+                stride=1,
+                padding=1
+            ),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.Conv2d(                          # Conv 5
+                in_channels=128,
+                out_channels=128,
+                kernel_size=3,
+                stride=1,
+                padding=1
+            ),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.MaxPool2d(2,2),
                 )
             
-        self.num_output_features = 64*32*32 #channels*width*height
+        self.num_output_features = 128*4*4 #channels*width*height
 
         # Classifier layers
         self.classifier = nn.Sequential(
