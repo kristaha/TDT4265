@@ -5,6 +5,7 @@ from torch import nn
 import torch.nn.functional as F
 from dataloaders import load_cifar10
 from utils import to_cuda, compute_loss_and_accuracy
+from task2_model_1 import Task2Model1
 
 
 class LeNetModel(nn.Module):
@@ -102,7 +103,8 @@ class Trainer:
         # Since we are doing multi-class classification, we use the CrossEntropyLoss
         self.loss_criterion = nn.CrossEntropyLoss()
         # Initialize the mode
-        self.model = LeNetModel(image_channels=3, num_classes=10)
+        #self.model = LeNetModel(image_channels=3, num_classes=10)
+        self.model = Task2Model1(image_channels=3, num_classes=10)
 
         # Initialize Xavier weights
         def weights_init(m):

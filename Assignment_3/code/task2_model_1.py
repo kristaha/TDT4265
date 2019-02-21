@@ -8,73 +8,72 @@ import torch.nn.functional as F
 
 class Task2Model1(nn.Module):
     def __init__(self, image_channels, num_classes):
-        super(self).__init__()
+        super().__init__()
 
     # Feature extractor layers
-    self.feature_extractor = nn.Sequential(
-            nn.Conv2d(                          # Conv 0
-                in_channels=image_channels,
-                out_channels=32,
-                kernel_size=3,
-                stride=1,
-                padding=1
-            ),
-            nn.BatchNorm2d(out_channels_in_prev_conv),
-            nn.ReLU(),
-            nn.Conv2d(                          # Conv 1
-                in_channels=32,
-                out_channels=64,
-                kernel_size=3,
-                stride=1,
-                padding=1
-            ),
-            nn.BatchNorm2d(out_channels_in_prev_conv),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Conv2d(                          # Conv 2
-                in_channels=image_channels,
-                out_channels=128,
-                kernel_size=3,
-                stride=1,
-                padding=1
-            ),
-            nn.BatchNorm2d(out_channels_in_prev_conv),
-            nn.ReLU(),
-            nn.Conv2d(                          # Conv 3
-                in_channels=128,
-                out_channels=256, 
-#Flere channels gjør at man kan lete etter flere features. Ved å ha flere lag leter man etter features i de allerede definerte featuresene - bedre med mange lag og færre channels enn få lag med mange channels --> det tar lang tid å trene så mange vekter det blir ved å ha mange channels. 
-                kernel_size=3,
-                stride=1,
-                padding=1
-            ),
-            nn.BatchNorm2d(out_channels_in_prev_conv),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            '''nn.Conv2d(
-                in_channels=image_channels,
-                out_channels=conv_1_num_filters,
-                kernel_size=3,
-                stride=1,
-                padding=2
-            ),
-            nn.BatchNorm2d(out_channels_in_prev_conv),
-            nn.ReLU(),
-            nn.Conv2d(
-                in_channels=image_channels,
-                out_channels=conv_1_num_filters,
-                kernel_size=3,
-                stride=1,
-                padding=2
-            ),
-            nn.BatchNorm2d(out_channels_in_prev_conv),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            '''
-            )
-            
+        self.feature_extractor = nn.Sequential(
+                nn.Conv2d(                          # Conv 0
+                    in_channels=image_channels,
+                    out_channels=32,
+                    kernel_size=3,
+                    stride=1,
+                    padding=1
+                ),
+                nn.BatchNorm2d(32),
+                nn.ReLU(),
+                nn.Conv2d(                          # Conv 1
+                    in_channels=32,
+                    out_channels=64,
+                    kernel_size=3,
+                    stride=1,
+                    padding=1
+                ),
+                nn.BatchNorm2d(64),
+                nn.ReLU(),
+                nn.MaxPool2d(kernel_size=2, stride=2),
+                nn.Conv2d(                          # Conv 2
+                    in_channels=64,
+                    out_channels=128,
+                    kernel_size=3,
+                    stride=1,
+                    padding=1
+                ),
+                nn.BatchNorm2d(128),
+                nn.ReLU(),
+                nn.Conv2d(                          # Conv 3
+                    in_channels=128,
+                    out_channels=256, 
+    #Flere channels gjør at man kan lete etter flere features. Ved å ha flere lag leter man etter features i de allerede definerte featuresene - bedre med mange lag og færre channels enn få lag med mange channels --> det tar lang tid å trene så mange vekter det blir ved å ha mange channels. 
+                    kernel_size=3,
+                    stride=1,
+                    padding=1
+                ),
+                nn.BatchNorm2d(256),
+                nn.ReLU(),
+                nn.MaxPool2d(kernel_size=2, stride=2),
+                #nn.Conv2d(                          # Conv 4
+                #    in_channels=256,
+                #    out_channels=64,
+                #    kernel_size=3,
+                #    stride=1,
+                #    padding=2
+                #),
+                #nn.BatchNorm2d(64),
+                #nn.ReLU(),
+                #nn.Conv2d(                          # Conv 5
+                #    in_channels=64,
+                #    out_channels=32,
+                #    kernel_size=3,
+                #    stride=1,
+                #    padding=2
+                #),
+                #nn.BatchNorm2d(32),
+                #nn.ReLU(),
+                #nn.MaxPool2d(kernel_size=2, stride=2),
+                )
+                
 
-        self.num_output_features = 265*4*4 #channels*width*height
+        self.num_output_features = 256*8*8 #channels*width*height
 
         # Classifier layers
         self.classifier = nn.Sequential(
