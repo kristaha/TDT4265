@@ -133,6 +133,7 @@ class Trainer:
         self.TRAIN_ACC = []
         self.VALIDATION_ACC = []
         self.TEST_ACC = []
+        self.number_of_epochs = 0
 
     def validation_epoch(self):
         """
@@ -217,6 +218,7 @@ class Trainer:
                     if self.should_early_stop():
                         print("Early stopping.")
                         return
+            self.number_of_epochs += 1
 
 
 if __name__ == "__main__":
@@ -249,3 +251,4 @@ if __name__ == "__main__":
     print("Final validation loss:", trainer.VALIDATION_LOSS[-trainer.early_stop_count])
     print("Final ttaining accuracy:", trainer.TRAIN_ACC[-trainer.early_stop_count])
     print("Final training loss:", trainer.TRAIN_LOSS[-trainer.early_stop_count])
+    print("Total number of epochs " + str(traner.number_of_epochs))
