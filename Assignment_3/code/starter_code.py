@@ -251,4 +251,4 @@ if __name__ == "__main__":
     print("Final validation loss:", trainer.VALIDATION_LOSS[-trainer.early_stop_count])
     print("Final ttaining accuracy:", trainer.TRAIN_ACC[-trainer.early_stop_count])
     print("Final training loss:", trainer.TRAIN_LOSS[-trainer.early_stop_count])
-    print("Total number of epochs " + str(traner.number_of_epochs))
+    print("Total number of epochs " + str(trainer.number_of_epochs))
