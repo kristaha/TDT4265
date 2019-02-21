@@ -25,6 +25,7 @@ class Task2Model2(nn.Module):
                 stride=1,
                 padding=1
             ),
+            nn.Dropout2d(),
             nn.BatchNorm2d(16),
             nn.ReLU(),
             nn.Conv2d(                          # Conv 2
@@ -43,6 +44,7 @@ class Task2Model2(nn.Module):
                 stride=1,
                 padding=1
             ),
+            nn.Dropout2d(),
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Conv2d(                          # Conv 4
