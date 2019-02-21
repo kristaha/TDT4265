@@ -51,25 +51,6 @@ class Task2Model1(nn.Module):
                 nn.BatchNorm2d(256),
                 nn.ReLU(),
                 nn.MaxPool2d(kernel_size=2, stride=2),
-                #nn.Conv2d(                          # Conv 4
-                #    in_channels=256,
-                #    out_channels=64,
-                #    kernel_size=3,
-                #    stride=1,
-                #    padding=2
-                #),
-                #nn.BatchNorm2d(64),
-                #nn.ReLU(),
-                #nn.Conv2d(                          # Conv 5
-                #    in_channels=64,
-                #    out_channels=32,
-                #    kernel_size=3,
-                #    stride=1,
-                #    padding=2
-                #),
-                #nn.BatchNorm2d(32),
-                #nn.ReLU(),
-                #nn.MaxPool2d(kernel_size=2, stride=2),
                 )
                 
 
