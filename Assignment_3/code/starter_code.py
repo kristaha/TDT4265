@@ -166,11 +166,11 @@ class Trainer:
 
 
 if __name__ == "__main__":
-    #model21 = Trainer(64, 5e-2, 0, 0)
+    model21 = Trainer(64, 5e-2, 0, 0)
     resnet18 = Trainer(32, 5e-4, 1, 1)
 
     resnet18.train()
-    #model21.train()
+    model21.train()
 
     os.makedirs("plots", exist_ok=True)
     # Save plots and show them
@@ -197,8 +197,6 @@ if __name__ == "__main__":
     plt.legend()
     plt.savefig(os.path.join("plots", "final_accuracy.png"))
     plt.show()
-##Spørsmål til studass 
-    # Meningen at det skal ta flere timer å kjøre resnet18?
 
 
     #print("Final test accuracy:", trainer.TEST_ACC[-trainer.early_stop_count])
