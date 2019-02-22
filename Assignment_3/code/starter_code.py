@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import torch
 from torch import nn
 import torch.nn.functional as F
+import torchvision
 from dataloaders import load_cifar10
 from utils import to_cuda, compute_loss_and_accuracy
 from leNet_model import LeNetModel
@@ -12,15 +13,15 @@ from task3_resnet import ResNet18
 
 class Trainer:
 
-    def __init__(self):
+    def __init__(self, batch_size, learning_rate, network, optimizer):
         """
         Initialize our trainer class.
         Set hyperparameters, architecture, tracking variables etc.
         """
         # Define hyperparameters
         self.epochs = 100
-        self.batch_size = 32
-        self.learning_rate = 5e-4
+        self.batch_size = batch_size
+        self.learning_rate = learning_rate
         self.early_stop_count = 4
 
         # Architecture
@@ -28,10 +29,15 @@ class Trainer:
         # Since we are doing multi-class classification, we use the CrossEntropyLoss
         self.loss_criterion = nn.CrossEntropyLoss()
         # Initialize the mode
+        if network == 0:
+            self.model = Task2Model1(image_channels=3, num_classes=10)
+        elif network == 1:
+            self.model = ResNet18()
+
         #self.model = LeNetModel(image_channels=3, num_classes=10)
         #self.model = Task2Model1(image_channels=3, num_classes=10)
         #self.model = Task2Model2(image_channels=3, num_classes=10)
-        self.model = ResNet18()
+        #self.model = ResNet18()
 
         # Initialize Xavier weights
         def weights_init(m):
@@ -45,9 +51,11 @@ class Trainer:
         self.model = to_cuda(self.model)
 
         # Define our optimizer. SGD = Stochastich Gradient Descent
-        #self.optimizer = torch.optim.SGD(self.model.parameters(),
-        #                                 self.learning_rate)
-        self.optimizer = torch.optim.Adam(self.model.parameters(), self.learning_rate)
+        if optimizer == 0:
+            self.optimizer = torch.optim.SGD(self.model.parameters(),
+                                             self.learning_rate)
+        elif optimizer == 1:
+            self.optimizer = torch.optim.Adam(self.model.parameters(), self.learning_rate)
 
         # Load our dataset
         self.dataloader_train, self.dataloader_val, self.dataloader_test = load_cifar10(self.batch_size)
@@ -149,35 +157,52 @@ class Trainer:
                         return
             self.number_of_epochs += 1
 
+    def visualize_first_filter_resnet18():
+        image = self.dataloader_train[0]
+        activation = torchvision.models.resnet18(pretrained=True).conv1(image)
+
+
 
 if __name__ == "__main__":
-    trainer = Trainer()
-    trainer.train()
+    #model21 = Trainer(64, 5e-2, 0, 0)
+    resnet18 = Trainer(32, 5e-4, 1, 1)
+
+    resnet18.train()
+    #model21.train()
 
     os.makedirs("plots", exist_ok=True)
     # Save plots and show them
     plt.figure(figsize=(12, 8))
     plt.title("Cross Entropy Loss")
-    plt.plot(trainer.VALIDATION_LOSS, label="Validation loss")
-    plt.plot(trainer.TRAIN_LOSS, label="Training loss")
-    plt.plot(trainer.TEST_LOSS, label="Testing Loss")
+    plt.plot(model21.VALIDATION_LOSS, label="Validation loss Model 21")
+    plt.plot(model21.TRAIN_LOSS, label="Training loss Model 21")
+    plt.plot(model21.TEST_LOSS, label="Testing Loss Model 21")
+    plt.plot(resnet18.VALIDATION_LOSS, label="Validation loss ResNet18")
+    plt.plot(resnet18.TRAIN_LOSS, label="Training loss ResNet18")
+    plt.plot(resnet18.TEST_LOSS, label="Testing Loss ResNet18")
     plt.legend()
     plt.savefig(os.path.join("plots", "final_loss.png"))
     plt.show()
 
     plt.figure(figsize=(12, 8))
     plt.title("Accuracy")
-    plt.plot(trainer.VALIDATION_ACC, label="Validation Accuracy")
-    plt.plot(trainer.TRAIN_ACC, label="Training Accuracy")
-    plt.plot(trainer.TEST_ACC, label="Testing Accuracy")
+    plt.plot(model21.VALIDATION_ACC, label="Validation Accuracy Model 21")
+    plt.plot(model21.TRAIN_ACC, label="Training Accuracy Model 21")
+    plt.plot(model21.TEST_ACC, label="Testing Accuracy Model 21")
+    plt.plot(resnet18.VALIDATION_ACC, label="Validation Accuracy ResNet18")
+    plt.plot(resnet18.TRAIN_ACC, label="Training Accuracy ResNet18")
+    plt.plot(resnet18.TEST_ACC, label="Testing Accuracy ResNet18")
     plt.legend()
     plt.savefig(os.path.join("plots", "final_accuracy.png"))
     plt.show()
+##Spørsmål til studass 
+    # Meningen at det skal ta flere timer å kjøre resnet18?
 
-    print("Final test accuracy:", trainer.TEST_ACC[-trainer.early_stop_count])
-    print("Final test loss:", trainer.TEST_LOSS[-trainer.early_stop_count])
-    print("Final validation accuracy:", trainer.VALIDATION_ACC[-trainer.early_stop_count])
-    print("Final validation loss:", trainer.VALIDATION_LOSS[-trainer.early_stop_count])
-    print("Final ttaining accuracy:", trainer.TRAIN_ACC[-trainer.early_stop_count])
-    print("Final training loss:", trainer.TRAIN_LOSS[-trainer.early_stop_count])
-    print("Total number of epochs " + str(trainer.number_of_epochs))
+
+    #print("Final test accuracy:", trainer.TEST_ACC[-trainer.early_stop_count])
+    #print("Final test loss:", trainer.TEST_LOSS[-trainer.early_stop_count])
+    #print("Final validation accuracy:", trainer.VALIDATION_ACC[-trainer.early_stop_count])
+    #print("Final validation loss:", trainer.VALIDATION_LOSS[-trainer.early_stop_count])
+    #print("Final ttaining accuracy:", trainer.TRAIN_ACC[-trainer.early_stop_count])
+    #print("Final training loss:", trainer.TRAIN_LOSS[-trainer.early_stop_count])
+    #print("Total number of epochs " + str(trainer.number_of_epochs))
