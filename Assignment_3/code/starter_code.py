@@ -160,6 +160,8 @@ class Trainer:
     def visualize_first_filter_resnet18():
         image = self.dataloader_train[0]
         activation = torchvision.models.resnet18(pretrained=True).conv1(image)
+        #torchVision save utils
+        #activation.view
 
 
 
