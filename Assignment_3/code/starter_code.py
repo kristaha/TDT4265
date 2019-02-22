@@ -8,7 +8,7 @@ from utils import to_cuda, compute_loss_and_accuracy
 from leNet_model import LeNetModel
 from task2_model_1 import Task2Model1
 from task2_model_2 import Task2Model2
-
+from task3_resnet import ResNet18
 
 class Trainer:
 
@@ -20,7 +20,7 @@ class Trainer:
         # Define hyperparameters
         self.epochs = 100
         self.batch_size = 32
-        self.learning_rate = 5e-2
+        self.learning_rate = 5e-4
         self.early_stop_count = 4
 
         # Architecture
@@ -30,7 +30,8 @@ class Trainer:
         # Initialize the mode
         #self.model = LeNetModel(image_channels=3, num_classes=10)
         #self.model = Task2Model1(image_channels=3, num_classes=10)
-        self.model = Task2Model2(image_channels=3, num_classes=10)
+        #self.model = Task2Model2(image_channels=3, num_classes=10)
+        self.model = ResNet18()
 
         # Initialize Xavier weights
         def weights_init(m):
@@ -46,7 +47,7 @@ class Trainer:
         # Define our optimizer. SGD = Stochastich Gradient Descent
         #self.optimizer = torch.optim.SGD(self.model.parameters(),
         #                                 self.learning_rate)
-        self.optimizer = torch.optim.Adam(self.model.parameters())
+        self.optimizer = torch.optim.Adam(self.model.parameters(), self.learning_rate)
 
         # Load our dataset
         self.dataloader_train, self.dataloader_val, self.dataloader_test = load_cifar10(self.batch_size)
@@ -118,6 +119,7 @@ class Trainer:
         self.validation_epoch()
         for epoch in range(self.epochs):
             # Perform a full pass through all the training samples
+            self.validation_epoch()
             for batch_it, (X_batch, Y_batch) in enumerate(self.dataloader_train):
                 # X_batch is the CIFAR10 images. Shape: [batch_size, 3, 32, 32]
                 # Y_batch is the CIFAR10 image label. Shape: [batch_size]
@@ -140,7 +142,7 @@ class Trainer:
                 self.optimizer.zero_grad()
                  # Compute loss/accuracy for all three datasets.
                 if batch_it % self.validation_check == 0:
-                    self.validation_epoch()
+                    #self.validation_epoch()
                     # Check early stopping criteria.
                     if self.should_early_stop():
                         print("Early stopping.")
