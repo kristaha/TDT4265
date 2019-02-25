@@ -157,45 +157,45 @@ class Trainer:
                         return
             self.number_of_epochs += 1
 
-    def visualize_first_filter_resnet18():
-        image = self.dataloader_train[0]
-        activation = torchvision.models.resnet18(pretrained=True).conv1(image)
-        #torchVision save utils
-        #activation.view
-
 
 
 if __name__ == "__main__":
-    model21 = Trainer(64, 5e-2, 0, 0)
+    #model21 = Trainer(64, 5e-2, 0, 0)
     resnet18 = Trainer(32, 5e-4, 1, 1)
 
-    resnet18.train()
-    model21.train()
+    #resnet18.train() #må vel ikke trene for pretrained layers. 
+    #model21.train()
 
     os.makedirs("plots", exist_ok=True)
     # Save plots and show them
-    plt.figure(figsize=(12, 8))
-    plt.title("Cross Entropy Loss")
-    plt.plot(model21.VALIDATION_LOSS, label="Validation loss Model 21")
-    plt.plot(model21.TRAIN_LOSS, label="Training loss Model 21")
-    plt.plot(model21.TEST_LOSS, label="Testing Loss Model 21")
-    plt.plot(resnet18.VALIDATION_LOSS, label="Validation loss ResNet18")
-    plt.plot(resnet18.TRAIN_LOSS, label="Training loss ResNet18")
-    plt.plot(resnet18.TEST_LOSS, label="Testing Loss ResNet18")
-    plt.legend()
-    plt.savefig(os.path.join("plots", "final_loss.png"))
-    plt.show()
+    #plt.figure(figsize=(12, 8))
+    #plt.title("Cross Entropy Loss")
+    #plt.plot(model21.VALIDATION_LOSS, label="Validation loss Model 21")
+    #plt.plot(model21.TRAIN_LOSS, label="Training loss Model 21")
+    #plt.plot(model21.TEST_LOSS, label="Testing Loss Model 21")
+    #plt.plot(resnet18.VALIDATION_LOSS, label="Validation loss ResNet18")
+    #plt.plot(resnet18.TRAIN_LOSS, label="Training loss ResNet18")
+    #plt.plot(resnet18.TEST_LOSS, label="Testing Loss ResNet18")
+    #plt.legend()
+    #plt.savefig(os.path.join("plots", "final_loss.png"))
+    #plt.show()
 
-    plt.figure(figsize=(12, 8))
-    plt.title("Accuracy")
-    plt.plot(model21.VALIDATION_ACC, label="Validation Accuracy Model 21")
-    plt.plot(model21.TRAIN_ACC, label="Training Accuracy Model 21")
-    plt.plot(model21.TEST_ACC, label="Testing Accuracy Model 21")
-    plt.plot(resnet18.VALIDATION_ACC, label="Validation Accuracy ResNet18")
-    plt.plot(resnet18.TRAIN_ACC, label="Training Accuracy ResNet18")
-    plt.plot(resnet18.TEST_ACC, label="Testing Accuracy ResNet18")
-    plt.legend()
-    plt.savefig(os.path.join("plots", "final_accuracy.png"))
+    #plt.figure(figsize=(12, 8))
+    #plt.title("Accuracy")
+    #plt.plot(model21.VALIDATION_ACC, label="Validation Accuracy Model 21")
+    #plt.plot(model21.TRAIN_ACC, label="Training Accuracy Model 21")
+    #plt.plot(model21.TEST_ACC, label="Testing Accuracy Model 21")
+    #plt.plot(resnet18.VALIDATION_ACC, label="Validation Accuracy ResNet18")
+    #plt.plot(resnet18.TRAIN_ACC, label="Training Accuracy ResNet18")
+    #plt.plot(resnet18.TEST_ACC, label="Testing Accuracy ResNet18")
+    #plt.legend()
+    #plt.savefig(os.path.join("plots", "final_accuracy.png"))
+    #plt.show()
+
+    #Visualizing filters
+    to_vis = resnet18.visualize_first_filter_resnet18()
+    plt.imgshow(to_vis)
+    plt.savefig(os.path.join("plots", "first_layer_filters.png"))
     plt.show()
 
 
