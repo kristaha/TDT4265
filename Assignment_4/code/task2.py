@@ -24,8 +24,16 @@ def calculate_iou(prediction_box, gt_box):
 
     iou = intersection/union
 
-    if iou < 0:
+    if iou <= 0:
         return 0.0
+
+    #Check if there is no overlap 
+    if (abs(prediction_box[0] - gt_box[0]) > 
+            max(prediction_box[2] - prediction_box[0], gt_box[2] - gt_box[0])) and (
+            abs(prediction_box[1] - gt_box[1]) > 
+            max(prediction_box[3] - prediction_box[1], gt_box[3] - gt_box[1])):
+        return 0.0
+
     return iou
 
 
@@ -221,7 +229,7 @@ def get_precision_recall_curve(all_prediction_boxes, all_gt_boxes,
 
             E.g: score[0][1] is the confidence score for a predicted bounding box 1 in image 0.
     Returns:
-        array of tuples: (precision, recall). Both float.
+        precisions and recalls : two separate (list of np.array of floats)
     """
     # Instead of going over every possible confidence score threshold to compute the PR
     # curve, we will use an approximation
@@ -230,13 +238,33 @@ def get_precision_recall_curve(all_prediction_boxes, all_gt_boxes,
     confidence_thresholds = np.linspace(0, 1, 500)
 
     # YOUR CODE HERE
-    #Finds prediction boxses with confidence score > confidence_thresholds
-    filtering_mask = np.greater(confidence_scores, confidence_thresholds)
-    #confident_prediction_box_indices = all_prediction_boxes[filtering_mask]
-    prediction_boxes = all_prediction_boxes[filtering_mask]
+    precisions = []
+    recalls = []
+    
+    for i in range(confidence_thresholds.size):
+        #Finds prediction boxses with confidence score > confidence_thresholds
+        filter_mask = np.greater(confidence_scores, confidence_thresholds[i])
 
-    #Hva vil de ha som output format? gir ikke mening?
-    raise NotImplementedError
+        confident_predictions = []
+
+        for j in range(len(all_prediction_boxes)):
+            conf_pred_in_img = all_prediction_boxes[j][filter_mask[j]]
+            confident_predictions.append(conf_pred_in_img)
+
+        confident_predictions = np.array(confident_predictions)
+
+        #Calculate precision and recalls for these boxes
+        precision_and_recall = calculate_precision_recall_all_images(
+            confident_predictions, all_gt_boxes, iou_threshold)
+
+        precisions.append(precision_and_recall[0])
+        recalls.append(precision_and_recall[1])
+
+    precisions = np.array(precisions)
+    recalls = np.array(recalls)
+
+    return precisions, recalls
+
 
     
 
@@ -276,8 +304,30 @@ def calculate_mean_average_precision(precisions, recalls):
     # DO NOT CHANGE. If you change this, the tests will not pass when we run the final
     # evaluation
     recall_levels = np.linspace(0, 1.0, 11)
+    
     # YOUR CODE HERE
-    raise NotImplementedError
+    ap_sum = 0
+    recalls = recalls[::-1]
+    precisions = precisions[::-1]
+    max_recall = np.amax(recalls)
+    #recall_level_index = 1
+    print("Recalls")
+    print(recalls)
+    print("Precisions")
+    print(precisions)
+
+    for i in range(recall_levels.size):
+        current_recall_level = recall_levels[i]
+        print("Recall level: " + str(current_recall_level))
+        if current_recall_level > max_recall:
+            recall_index = -1
+        else:
+            recall_index = np.argmax(recalls >= current_recall_level)
+        print("Recall index: " + str(recall_index))
+        precis = np.amax(precisions[recall_index:])
+        print("Precis to be added = " + str(precis))
+        ap_sum += precis        
+    return ap_sum / recall_levels.size
 
 
 def mean_average_precision(ground_truth_boxes, predicted_boxes):
@@ -326,6 +376,8 @@ if __name__ == "__main__":
     mean_average_precision(ground_truth_boxes, predicted_boxes)
 
 #Spørsmål til studass:
-    # Hva er det de vil at outputen til calculate_precision_recall... og calc_precision_recall_curve? 
-    # Skjønner ikke hva de er ute etter?
-    # Hva skal confidence brukes til? Hvordan ev matche den med riktig bilde?
+    # Skjønner ikke feilen i calc_precision_recall_curve? 
+
+    # Hva er feil i mAP
+
+    # Feil output i task4 
